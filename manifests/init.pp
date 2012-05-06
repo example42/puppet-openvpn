@@ -170,7 +170,7 @@
 #
 # [*pid_file*]
 #   Path of pid file. Used by monitor
-#
+
 # [*data_dir*]
 #   Path of application data directory. Used by puppi
 #
@@ -386,42 +386,6 @@ class openvpn (
       ensure    => $openvpn::manage_file,
       variables => $classvars,
       helper    => $openvpn::puppi_helper,
-    }
-  }
-
-
-  ### Service monitoring, if enabled ( monitor => true )
-  if $openvpn::bool_monitor == true {
-    monitor::port { "openvpn_${openvpn::protocol}_${openvpn::port}":
-      protocol => $openvpn::protocol,
-      port     => $openvpn::port,
-      target   => $openvpn::monitor_target,
-      tool     => $openvpn::monitor_tool,
-      enable   => $openvpn::manage_monitor,
-    }
-    monitor::process { 'openvpn_process':
-      process  => $openvpn::process,
-      service  => $openvpn::service,
-      pidfile  => $openvpn::pid_file,
-      user     => $openvpn::process_user,
-      argument => $openvpn::process_args,
-      tool     => $openvpn::monitor_tool,
-      enable   => $openvpn::manage_monitor,
-    }
-  }
-
-
-  ### Firewall management, if enabled ( firewall => true )
-  if $openvpn::bool_firewall == true {
-    firewall { "openvpn_${openvpn::protocol}_${openvpn::port}":
-      source      => $openvpn::firewall_src,
-      destination => $openvpn::firewall_dst,
-      protocol    => $openvpn::protocol,
-      port        => $openvpn::port,
-      action      => 'allow',
-      direction   => 'input',
-      tool        => $openvpn::firewall_tool,
-      enable      => $openvpn::manage_firewall,
     }
   }
 

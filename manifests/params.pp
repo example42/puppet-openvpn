@@ -66,7 +66,7 @@ class openvpn::params {
   }
 
   $pid_file = $::operatingsystem ? {
-    default => '/var/run/openvpn.pid',
+    default => '/var/run/openvpn',
   }
 
   $data_dir = $::operatingsystem ? {
