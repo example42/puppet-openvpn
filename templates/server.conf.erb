@@ -1,56 +1,33 @@
 # File Managed by Puppet
 
-# Openvpn mode: <%= mode %>
-<% if mode == "server" -%>
-server <%= server %>
-<% end -%>
-<% if mode == "client" -%>
-client
-remote <%= remote %>
-pull
-resolv-retry infinite
-nobind
-<% end -%>
-
-# Network settings
+mode server
 port <%= port %>
 proto <%= real_proto %>
 dev <%= dev %>
-route <%= route %>
+<% if route != '' %>route <%= route %><% end -%>
+<% if push != '' %>push <%= push %><% end -%>
 
-# Authentication: <%= auth_type %>
 <% if auth_type == "key" -%>
 secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= name %>.key 
 <% end -%>
-
 <% if auth_type == "tls-server" -%>
-ca keys/ca.crt
-<% if mode == "server" -%>
 tls-server
-cert keys/<%= hostname %>.crt
-key keys/<%= hostname %>.key
-dh keys/dh1024.pem
+ca ca.crt
+cert <%= hostname %>.crt
+key <%= hostname %>.key
+dh dh1024.pem
+# duplicate-cn
 <% end -%>
 
-<% if mode == "client" -%>
-cert keys/<%= hostname %>.crt
-key keys/<%= hostname %>.key
-tls-client
-<% end -%>
+# client-config-dir ccd
 
-<% end -%>
-
-# General settings
 keepalive 10 60
-inactive 600
+inactive 0
 user <%= scope.lookupvar("openvpn::process_user") %>
 group <%= scope.lookupvar("openvpn::process_user") %>
-
 persist-tun
 persist-key
 verb 4 # From 0 to 15 (max)
-
-
 # comp-lzo # Compress data
 # client-connect /etc/openvpn/script/client_connect
 # client-disconnect /etc/openvpn/script/client_disconnect

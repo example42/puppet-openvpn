@@ -343,6 +343,8 @@ class openvpn (
     require    => Package['openvpn'],
   }
 
+  if $manage_file_source != undef
+  or $manage_file_content != undef {
   file { 'openvpn.conf':
     ensure  => $openvpn::manage_file,
     path    => $openvpn::config_file,
@@ -355,6 +357,7 @@ class openvpn (
     content => $openvpn::manage_file_content,
     replace => $openvpn::manage_file_replace,
     audit   => $openvpn::manage_audit,
+  }
   }
 
   # The whole openvpn configuration directory can be recursively overriden
