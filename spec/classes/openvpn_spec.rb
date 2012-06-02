@@ -10,7 +10,6 @@ describe 'openvpn' do
     it { should contain_package('openvpn').with_ensure('present') }
     it { should contain_service('openvpn').with_ensure('running') }
     it { should contain_service('openvpn').with_enable('true') }
-    it { should contain_file('openvpn.conf').with_ensure('present') }
   end
 
   describe 'Test installation of a specific version' do
@@ -24,7 +23,6 @@ describe 'openvpn' do
     it 'should remove Package[openvpn]' do should contain_package('openvpn').with_ensure('absent') end 
     it 'should stop Service[openvpn]' do should contain_service('openvpn').with_ensure('stopped') end
     it 'should not enable at boot Service[openvpn]' do should contain_service('openvpn').with_enable('false') end
-    it 'should remove openvpn configuration file' do should contain_file('openvpn.conf').with_ensure('absent') end
   end
 
   describe 'Test decommissioning - disable' do
@@ -33,7 +31,6 @@ describe 'openvpn' do
     it { should contain_package('openvpn').with_ensure('present') }
     it 'should stop Service[openvpn]' do should contain_service('openvpn').with_ensure('stopped') end
     it 'should not enable at boot Service[openvpn]' do should contain_service('openvpn').with_enable('false') end
-    it { should contain_file('openvpn.conf').with_ensure('present') }
   end
 
   describe 'Test decommissioning - disableboot' do
@@ -43,7 +40,6 @@ describe 'openvpn' do
     it { should_not contain_service('openvpn').with_ensure('present') }
     it { should_not contain_service('openvpn').with_ensure('absent') }
     it 'should not enable at boot Service[openvpn]' do should contain_service('openvpn').with_enable('false') end
-    it { should contain_file('openvpn.conf').with_ensure('present') }
   end 
 
   describe 'Test customizations - template' do
@@ -77,14 +73,6 @@ describe 'openvpn' do
     end
   end
 
-  describe 'Test customizations - custom class' do
-    let(:params) { {:my_class => "openvpn::spec" } }
-    it 'should automatically include a custom class' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:content]
-      content.should match "fqdn: rspec.example42.com"
-    end
-  end
-
   describe 'Test service autorestart', :broken => true do
     it 'should automatically restart the service, by default' do
       content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:notify]
@@ -93,7 +81,7 @@ describe 'openvpn' do
   end
 
   describe 'Test service autorestart' do
-    let(:params) { {:service_autorestart => "no" } }
+    let(:params) { {:service_autorestart => "no" , :source => 'real' } }
 
     it 'should not automatically restart the service, when service_autorestart => false' do
       content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:notify]

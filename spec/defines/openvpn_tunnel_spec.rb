@@ -24,7 +24,7 @@ describe 'openvpn::tunnel' do
       content.should match "secret /etc/openvpn/mytunnel.key "
     end
     it 'should create a key file when auth_key is provided' do
-      content = catalogue.resource('file', 'openvpn_mytunnel.key').send(:parameters)[:content]
+      content = catalogue.resource('file', 'openvpn_mytunnel.key').send(:parameters)[:source]
       content.should match "mykey"
     end
   end
