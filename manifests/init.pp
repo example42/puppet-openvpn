@@ -369,7 +369,7 @@ class openvpn (
       notify  => $openvpn::manage_service_autorestart,
       source  => $openvpn::source_dir,
       recurse => true,
-      purge   => $openvpn::source_dir_purge,
+      purge   => $openvpn::bool_source_dir_purge,
       replace => $openvpn::manage_file_replace,
       audit   => $openvpn::manage_audit,
     }
