@@ -119,11 +119,12 @@ define openvpn::tunnel (
     }
 
     monitor::port { "openvpn_${name}_${proto}_${port}":
-      enable   => $bool_enable,
-      protocol => $proto,
-      port     => $port,
-      target   => $target,
-      tool     => $openvpn::monitor_tool,
+      enable      => $bool_enable,
+      protocol    => $proto,
+      port        => $port,
+      target      => $target,
+      checksource => 'local',
+      tool        => $openvpn::monitor_tool,
     }
     monitor::process { "openvpn_${name}_process":
       enable   => $bool_enable,
