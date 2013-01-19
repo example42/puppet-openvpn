@@ -41,8 +41,8 @@
 #
 # [*template*]
 #   Template to be used for the tunnel configuration.
-#   Default is openvpn/tunnel.conf.erb
-#   File: openvpn/templates/tunnel.conf.erb
+#   Default is openvpn/server.conf.erb
+#   File: openvpn/templates/server.conf.erb
 #
 # [*enable*]
 #   If the tunnel is enabled or not.

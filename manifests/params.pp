@@ -37,7 +37,13 @@ class openvpn::params {
   }
 
   $process_user = $::operatingsystem ? {
-    default => 'openvpn',
+    'Debian' => 'nobody',
+    default  => 'openvpn',
+  }
+
+  $process_group = $::operatingsystem ? {
+    'Debian' => 'nogroup',
+    default  => 'openvpn',
   }
 
   $config_dir = $::operatingsystem ? {
