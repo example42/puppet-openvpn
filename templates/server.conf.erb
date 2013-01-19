@@ -4,8 +4,9 @@ mode server
 port <%= port %>
 proto <%= real_proto %>
 dev <%= dev %>
-<% if route != '' %>route <%= route %><% end -%>
-<% if push != '' %>push <%= push %><% end -%>
+<% if route != '' %>route <%= route %><% end -%> 
+<% if push != '' %>push <%= push %><% end -%> 
+<% if server != '' %>server <%= server %><% end -%> 
 
 <% if auth_type == "key" -%>
 secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= name %>.key 
