@@ -24,7 +24,7 @@ dh dh1024.pem
 keepalive 10 60
 inactive 0
 user <%= scope.lookupvar("openvpn::process_user") %>
-group <%= scope.lookupvar("openvpn::process_user") %>
+group <%= scope.lookupvar("openvpn::process_group") %>
 persist-tun
 persist-key
 verb 4 # From 0 to 15 (max)

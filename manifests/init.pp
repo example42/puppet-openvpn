@@ -150,6 +150,9 @@
 # [*process_user*]
 #   The name of the user openvpn runs with. Used by puppi and monitor.
 #
+# [*process_group*]
+#   The name of the group openvpn runs with. Used by puppi and monitor.
+#
 # [*config_dir*]
 #   Main configuration directory. Used by puppi
 #
@@ -233,6 +236,7 @@ class openvpn (
   $process             = params_lookup( 'process' ),
   $process_args        = params_lookup( 'process_args' ),
   $process_user        = params_lookup( 'process_user' ),
+  $process_group       = params_lookup( 'process_group' ),
   $config_dir          = params_lookup( 'config_dir' ),
   $config_file         = params_lookup( 'config_file' ),
   $config_file_mode    = params_lookup( 'config_file_mode' ),
