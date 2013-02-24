@@ -118,7 +118,7 @@ define openvpn::tunnel (
       default => $remote,
     }
 
-    if $proto == 'tcp' ? {
+    if $proto == 'tcp' {
       monitor::port { "openvpn_${name}_${proto}_${port}":
         enable      => $bool_enable,
         protocol    => $proto,
