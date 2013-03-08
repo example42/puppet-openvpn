@@ -73,11 +73,9 @@ describe 'openvpn' do
     end
   end
 
-  describe 'Test service autorestart', :broken => true do
-    it 'should automatically restart the service, by default' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:notify]
-      content.should == 'Service[openvpn]{:name=>"openvpn"}'
-    end
+  describe 'Test service autorestart' do
+    let(:params) { {:template => 'openvpn/spec.erb' } }
+    it { should contain_file('openvpn.conf').with_notify('Service[openvpn]') }
   end
 
   describe 'Test service autorestart' do
