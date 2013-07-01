@@ -9,7 +9,7 @@ dev <%= @dev %>
 <% if @server != '' %>server <%= @server %><% end -%> 
 
 <% if @auth_type == "key" -%>
-secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= name %>.key 
+secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key 
 <% end -%>
 <% if @auth_type == "tls-server" -%>
 tls-server
