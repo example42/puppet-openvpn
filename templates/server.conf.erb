@@ -1,21 +1,21 @@
 # File Managed by Puppet
 
 mode server
-port <%= port %>
-proto <%= real_proto %>
-dev <%= dev %>
-<% if route != '' %>route <%= route %><% end -%> 
-<% if push != '' %>push <%= push %><% end -%> 
-<% if server != '' %>server <%= server %><% end -%> 
+port <%= @port %>
+proto <%= @real_proto %>
+dev <%= @dev %>
+<% if @route != '' %>route <%= @route %><% end -%> 
+<% if @push != '' %>push <%= @push %><% end -%> 
+<% if @server != '' %>server <%= @server %><% end -%> 
 
-<% if auth_type == "key" -%>
-secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= name %>.key 
+<% if @auth_type == "key" -%>
+secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key 
 <% end -%>
-<% if auth_type == "tls-server" -%>
+<% if @auth_type == "tls-server" -%>
 tls-server
 ca ca.crt
-cert <%= hostname %>.crt
-key <%= hostname %>.key
+cert <%= @hostname %>.crt
+key <%= @hostname %>.key
 dh dh1024.pem
 # duplicate-cn
 <% end -%>

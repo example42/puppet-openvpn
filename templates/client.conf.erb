@@ -1,23 +1,23 @@
 # File Managed by Puppet
 
-remote <%= remote %> <%= port %>
-proto <%= real_proto %>
-dev <%= dev %>
-<% if route != '' %>route <%= route %><% end -%>
+remote <%= @remote %> <%= @port %>
+proto <%= @real_proto %>
+dev <%= @dev %>
+<% if @route != '' %>route <%= @route %><% end -%>
 resolv-retry infinite
 nobind
 
 persist-key
 persist-tun
-<% if auth_type == "key" -%>
+<% if @auth_type == "key" -%>
 client
-secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= name %>.key 
+secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key 
 <% end -%>
-<% if auth_type == "tls-client" -%>
+<% if @auth_type == "tls-client" -%>
 tls-client
 ca ca.crt
-cert <%= hostname %>.crt
-key <%= hostname %>.key
+cert <%= @hostname %>.crt
+key <%= @hostname %>.key
 tls-client
 pull
 <% end -%>
