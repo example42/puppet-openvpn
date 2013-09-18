@@ -20,6 +20,8 @@ class openvpn::params {
     default => 'openvpn',
   }
 
+  $package_src = 'distro'
+
   $service = $::operatingsystem ? {
     default => 'openvpn',
   }
