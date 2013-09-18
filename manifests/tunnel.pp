@@ -59,7 +59,9 @@ define openvpn::tunnel (
   $route        = '',
   $push         = '',
   $template     = '',
-  $enable       = true ) {
+  $enable       = true,
+  $clients      = {}
+) {
 
   include openvpn
 
@@ -109,6 +111,8 @@ define openvpn::tunnel (
       source  => $auth_key,
     }
   }
+  
+  each($clients) |$commonname, $params| { notice $params }
 
 # Automatic monitoring of port and service
   if $openvpn::bool_monitor == true {
