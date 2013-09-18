@@ -17,7 +17,7 @@ class openvpn::repository (
     }
 
     apt::key { '2048R/E158C569':
-      url => 'http://swupdate.openvpn.net/repos/repo-public.gpg',
+      url => 'https://swupdate.openvpn.net/repos/repo-public.gpg',
     }
   }
 
