@@ -134,6 +134,10 @@
 # [*package*]
 #   The name of openvpn package
 #
+# [*package_src*]
+#   The source of the package. Currently only 'distro' (default) and
+#   'openvpn' are supported.
+#
 # [*service*]
 #   The name of openvpn service
 #
@@ -231,6 +235,7 @@ class openvpn (
   $debug               = params_lookup( 'debug' , 'global' ),
   $audit_only          = params_lookup( 'audit_only' , 'global' ),
   $package             = params_lookup( 'package' ),
+  $package_src         = params_lookup( 'package_src' ),
   $service             = params_lookup( 'service' ),
   $service_status      = params_lookup( 'service_status' ),
   $process             = params_lookup( 'process' ),
@@ -333,6 +338,14 @@ class openvpn (
   }
 
   ### Managed resources
+  if $package_src != 'distro' and $package_src != 'openvpn' {
+    fail("Unrecognized value for option package_src")
+  } elsif $package_src == 'openvpn' {
+    class { 'openvpn::repository':
+      before => Package[$openvpn::package]
+    }
+  }
+  
   package { 'openvpn':
     ensure => $openvpn::manage_package,
     name   => $openvpn::package,
