@@ -47,6 +47,40 @@
 # [*enable*]
 #   If the tunnel is enabled or not.
 #
+# [*clients*]
+#   The clients to allow and their configuration
+#
+# [*client_definedtype*]
+#   The Defined Resource Type to invoke when configuring a client
+#
+# [*easyrsa_country*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_province*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_city*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_org*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_email*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_cn*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_name*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_ou*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_key_size*]
+#   Option for easy-rsa to generate the certificate with
+#
+#
 define openvpn::tunnel (
   $auth_type           = 'tls-server',
   $mode                = 'server',
@@ -61,7 +95,7 @@ define openvpn::tunnel (
   $template            = '',
   $enable              = true,
   $clients             = {},
-  $client_type         = $openvpn::client_type,
+  $client_definedtype  = $openvpn::client_definedtype,
   $easyrsa_country     = $openvpn::easyrsa_country,
   $easyrsa_province    = $openvpn::easyrsa_province,
   $easyrsa_city        = $openvpn::easyrsa_city,
@@ -223,9 +257,9 @@ define openvpn::tunnel (
     # with multiple tunnels.
     each($clients) |$commonname, $params| {
       create_resources(
-        $client_type,
+        $client_definedtype,
         { "${name}-${commonname}" => $params },
-        { 'cn'  => $commonname, tunnelName => $name }
+        { cn  => $commonname, tunnelName => $name }
       )
 
     }

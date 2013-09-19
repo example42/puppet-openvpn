@@ -198,9 +198,38 @@
 #   This is used by monitor, firewall and puppi (optional) components
 #   Can be defined also by the (top scope) variable $openvpn_protocol
 #
-# [*client_class*]
-#   The class to use for configuring individual clients of a tunnel
+# [*client_definedtype*]
+#   The Defined Resource Type to invoke when configuring a client
 #
+# [*easyrsa_package*]
+#   The name of the easy-rsa package to install to generate TLS certs
+#
+# [*easyrsa_country*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_province*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_city*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_org*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_email*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_cn*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_name*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_ou*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_key_size*]
+#   Option for easy-rsa to generate the certificate with
 #
 # == Examples
 #
@@ -257,7 +286,7 @@ class openvpn (
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' ),
-  $client_type         = params_lookup( 'client_type' ),
+  $client_definedtype  = params_lookup( 'client_type' ),
   $easyrsa_package     = params_lookup( 'easyrsa_package' ),
   $easyrsa_dir         = params_lookup( 'easyrsa_dir' ),
   $easyrsa_country     = params_lookup( 'easyrsa_country' ),

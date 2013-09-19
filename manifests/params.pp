@@ -90,9 +90,9 @@ class openvpn::params {
   }
 
   $port = '1194'
-  $protocol = 'tcp'
+  $protocol = 'udp'
   
-  $client_type = 'openvpn::client'
+  $client_definedtype = 'openvpn::client'
   
   # Easy-rsa
   $easyrsa_package      = 'easy-rsa'
@@ -105,7 +105,7 @@ class openvpn::params {
   $easyrsa_cn           = $::fqdn
   $easyrsa_name         = $::fqdn
   $easyrsa_ou           = 'DevOps'
-  $easyrsa_key_size     = 1024
+  $easyrsa_key_size     = 4096
 
   # General Settings
   $my_class = ''

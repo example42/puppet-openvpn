@@ -7,7 +7,7 @@ define openvpn::client (
   $ifconfigPush = '',
   $config       = ''
 ) {
-  
+
   file { "${openvpn::config_dir}/${tunnelName}/ccd/${cn}":
     ensure  => file,
     mode    => $openvpn::config_file_mode,
@@ -22,6 +22,7 @@ define openvpn::client (
     cwd      => "${openvpn::config_dir}/${tunnelName}/easy-rsa",
     creates  => "${openvpn::config_dir}/${tunnelName}/easy-rsa/keys/${name}.crt",
     provider => 'shell',
+    notify   => Service['openvpn'],
     require  => Exec["openvpn-tunnel-rsa-ca-${tunnelName}"]
   }
 
