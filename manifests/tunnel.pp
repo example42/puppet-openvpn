@@ -87,7 +87,7 @@ define openvpn::tunnel (
   $remote              = '',
   $port                = $openvpn::port,
   $auth_key            = '',
-  $proto               = 'udp',
+  $proto               = $openvpn::protocol,
   $dev                 = 'tun',
   $server              = '10.8.0.0 255.255.255.0',
   $route               = '',
