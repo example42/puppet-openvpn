@@ -170,6 +170,7 @@ define openvpn::tunnel (
           command => "/bin/cp -r ${openvpn::easyrsa_dir} ${openvpn::config_dir}/${name}/easy-rsa && \
                       chmod 755 ${openvpn::config_dir}/${name}/easy-rsa",
           creates => "${openvpn::config_dir}/${name}/easy-rsa",
+          notify  => Service['openvpn'],
           require => File["${openvpn::config_dir}/${name}"];
 
         "openvpn-tunnel-rsa-dh-${name}":
@@ -177,21 +178,26 @@ define openvpn::tunnel (
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
           creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/dh${easyrsa_key_size}.pem",
           provider => 'shell',
+          timeout  => 0,
+          notify   => Service['openvpn'],
           require  => File["${openvpn::config_dir}/${name}/easy-rsa/vars"];
 
         "openvpn-tunnel-rsa-ca-${name}":
           command  => '. ./vars && ./pkitool --initca',
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
-          creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.key",
+          creates  => [ "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.key", 
+                        "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.crt" ],
           provider => 'shell',
+          notify   => Service['openvpn'],
           require  => [ Exec["openvpn-tunnel-rsa-dh-${name}"],
                         File["${openvpn::config_dir}/${name}/easy-rsa/openssl.cnf"] ];
 
         "openvpn-tunnel-rsa-servercrt-${name}":
           command  => '. ./vars && ./pkitool --server server',
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
-          creates  => "${openvpn::config_dir}/easy-rsa/keys/server.key",
+          creates  => "${openvpn::config_dir}/easy-rsa/keys/${::fqdn}.key",
           provider => 'shell',
+          notify   => Service['openvpn'],
           require  => Exec["openvpn-tunnel-rsa-ca-${name}"];
       }
 
