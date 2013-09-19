@@ -257,7 +257,18 @@ class openvpn (
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' ),
-  $client_type         = params_lookup( 'client_type' )
+  $client_type         = params_lookup( 'client_type' ),
+  $easyrsa_package     = params_lookup( 'easyrsa_package' ),
+  $easyrsa_dir         = params_lookup( 'easyrsa_dir' ),
+  $easyrsa_country     = params_lookup( 'easyrsa_country' ),
+  $easyrsa_province    = params_lookup( 'easyrsa_province' ),
+  $easyrsa_city        = params_lookup( 'easyrsa_city' ),
+  $easyrsa_org         = params_lookup( 'easyrsa_org' ),
+  $easyrsa_email       = params_lookup( 'easyrsa_email' ),
+  $easyrsa_cn          = params_lookup( 'easyrsa_cn' ),
+  $easyrsa_name        = params_lookup( 'easyrsa_name' ),
+  $easyrsa_ou          = params_lookup( 'easyrsa_ou' ),
+  $easyrsa_key_size    = params_lookup( 'easyrsa_key_size' ),
   ) inherits openvpn::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)

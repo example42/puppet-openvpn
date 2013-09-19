@@ -48,20 +48,29 @@
 #   If the tunnel is enabled or not.
 #
 define openvpn::tunnel (
-  $auth_type    = 'tls-server',
-  $mode         = 'server',
-  $remote       = '',
-  $port         = '1194',
-  $auth_key     = '',
-  $proto        = 'tcp',
-  $dev          = 'tun',
-  $server       = '10.8.0.0 255.255.255.0',
-  $route        = '',
-  $push         = '',
-  $template     = '',
-  $enable       = true,
-  $clients      = {},
-  $client_type  = $openvpn::client_type
+  $auth_type           = 'tls-server',
+  $mode                = 'server',
+  $remote              = '',
+  $port                = $openvpn::port,
+  $auth_key            = '',
+  $proto               = 'tcp',
+  $dev                 = 'tun',
+  $server              = '10.8.0.0 255.255.255.0',
+  $route               = '',
+  $push                = '',
+  $template            = '',
+  $enable              = true,
+  $clients             = {},
+  $client_type         = $openvpn::client_type,
+  $easyrsa_country     = $openvpn::easyrsa_country,
+  $easyrsa_province    = $openvpn::easyrsa_province,
+  $easyrsa_city        = $openvpn::easyrsa_city,
+  $easyrsa_org         = $openvpn::easyrsa_org,
+  $easyrsa_email       = $openvpn::easyrsa_email,
+  $easyrsa_cn          = $openvpn::easyrsa_cn,
+  $easyrsa_name        = $openvpn::easyrsa_name,
+  $easyrsa_ou          = $openvpn::easyrsa_ou,
+  $easyrsa_key_size    = $openvpn::easyrsa_key_size,
 ) {
 
   include openvpn
@@ -89,6 +98,18 @@ define openvpn::tunnel (
     default => $template,
   }
 
+  if $easyrsa_key_size < 2048 {
+    # Assuming a CA is generated with a lifetime of 3650 days, 4096 really
+    # should be used. See also:
+    # http://lists.debian.org/debian-devel-announce/2010/09/msg00003.html
+    # http://danielpocock.com/rsa-key-sizes-2048-or-4096-bits
+    # http://news.techworld.com/security/3214360/rsa-1024-bit-private-key-encryption-cracked/
+    # Ask in ##security on Freenode (IRC)
+    notify { "A key size of ${easyrsa_key_size} bits was specified for\n
+              tunnel ${name}. You really should upgrade to 2048 bits, or even\n
+              4096 bits. Oh well, just don't blame us if you're hacked.": }
+  }
+
   file { "openvpn_${name}.conf":
     ensure  => $manage_file,
     path    => "${openvpn::config_dir}/${name}.conf",
@@ -98,15 +119,6 @@ define openvpn::tunnel (
     require => Package['openvpn'],
     notify  => Service['openvpn'],
     content => template($real_template),
-  }
-  
-  file { [ "${openvpn::config_dir}/${name}",
-           "${openvpn::config_dir}/${name}/ccd" ]:
-    ensure => directory,
-    mode    => $openvpn::config_file_mode,
-    owner   => $openvpn::config_file_owner,
-    group   => $openvpn::config_file_group,
-    require => Package['openvpn'],
   }
 
   if $auth_key != '' {
@@ -122,15 +134,85 @@ define openvpn::tunnel (
     }
   }
 
-  # The each is required to allow one CN to be used
-  # with multiple tunnels.
-  each($clients) |$commonname, $params| {
-    create_resources(
-      $client_type,
-      { "${name}-${commonname}" => $params },
-      { 'cn'  => $commonname }
-    )
-  
+  if $mode == 'server' {
+    
+    file { [ "${openvpn::config_dir}/${name}",
+             "${openvpn::config_dir}/${name}/ccd" ]:
+      ensure => directory,
+      mode    => $openvpn::config_file_mode,
+      owner   => $openvpn::config_file_owner,
+      group   => $openvpn::config_file_group,
+      require => Package['openvpn'],
+    }
+
+    if $auth_type == "tls-server" {
+
+      if ! defined(Package[$openvpn::easyrsa_package]) {
+        package { $openvpn::easyrsa_package:
+          ensure => installed
+        }
+      }
+
+      file { "${openvpn::config_dir}/${name}/easy-rsa/vars":
+        ensure  => present,
+        content => template('openvpn/easyrsa.vars.erb'),
+        require => Exec["openvpn-tunnel-setup-easyrsa-${name}"];
+      }
+
+      file {"${openvpn::config_dir}/${name}/easy-rsa/openssl.cnf":
+        ensure => link,
+        target => "/etc/openvpn/${name}/easy-rsa/openssl-1.0.0.cnf",
+        require => Exec["openvpn-tunnel-setup-easyrsa-${name}"]
+      }
+
+      exec {
+        "openvpn-tunnel-setup-easyrsa-${name}":
+          command => "/bin/cp -r ${openvpn::easyrsa_dir} ${openvpn::config_dir}/${name}/easy-rsa && \
+                      chmod 755 ${openvpn::config_dir}/${name}/easy-rsa",
+          creates => "${openvpn::config_dir}/${name}/easy-rsa",
+          require => File["${openvpn::config_dir}/${name}"];
+
+        "openvpn-tunnel-rsa-dh-${name}":
+          command  => '. ./vars && ./clean-all && ./build-dh',
+          cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
+          creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/dh${easyrsa_key_size}.pem",
+          provider => 'shell',
+          require  => File["${openvpn::config_dir}/${name}/easy-rsa/vars"];
+
+        "openvpn-tunnel-rsa-ca-${name}":
+          command  => '. ./vars && ./pkitool --initca',
+          cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
+          creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.key",
+          provider => 'shell',
+          require  => [ Exec["openvpn-tunnel-rsa-dh-${name}"],
+                        File["${openvpn::config_dir}/${name}/easy-rsa/openssl.cnf"] ];
+
+        "openvpn-tunnel-rsa-servercrt-${name}":
+          command  => '. ./vars && ./pkitool --server server',
+          cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
+          creates  => "${openvpn::config_dir}/easy-rsa/keys/server.key",
+          provider => 'shell',
+          require  => Exec["openvpn-tunnel-rsa-ca-${name}"];
+      }
+
+      file { "${openvpn::config_dir}/${name}/keys":
+        ensure  => link,
+        target  => "${openvpn::config_dir}/${name}/easy-rsa/keys",
+        require => Exec["openvpn-tunnel-setup-easyrsa-${name}"];
+      }
+
+    }
+
+    # The each is required to allow one CN to be used
+    # with multiple tunnels.
+    each($clients) |$commonname, $params| {
+      create_resources(
+        $client_type,
+        { "${name}-${commonname}" => $params },
+        { 'cn'  => $commonname }
+      )
+
+    }
   }
 
 # Automatic monitoring of port and service

@@ -1,8 +1,7 @@
 define openvpn::client (
   $cn,
-  $params
 ) {
 
-  notify {"$name: $params":}
+  notify {"$name":}
   
 }

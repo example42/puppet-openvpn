@@ -16,7 +16,7 @@ tls-server
 ca ca.crt
 cert <%= @hostname %>.crt
 key <%= @hostname %>.key
-dh dh1024.pem
+dh dh<%= @easyrsa_key_size %>.pem
 # duplicate-cn
 <% end -%>
 
