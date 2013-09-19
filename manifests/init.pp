@@ -286,7 +286,7 @@ class openvpn (
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' ),
-  $client_definedtype  = params_lookup( 'client_type' ),
+  $client_definedtype  = params_lookup( 'client_definedtype' ),
   $easyrsa_package     = params_lookup( 'easyrsa_package' ),
   $easyrsa_dir         = params_lookup( 'easyrsa_dir' ),
   $easyrsa_country     = params_lookup( 'easyrsa_country' ),
