@@ -53,7 +53,7 @@ define openvpn::tunnel (
   $remote              = '',
   $port                = $openvpn::port,
   $auth_key            = '',
-  $proto               = 'tcp',
+  $proto               = 'udp',
   $dev                 = 'tun',
   $server              = '10.8.0.0 255.255.255.0',
   $route               = '',
@@ -136,13 +136,22 @@ define openvpn::tunnel (
 
   if $mode == 'server' {
     
-    file { [ "${openvpn::config_dir}/${name}",
-             "${openvpn::config_dir}/${name}/ccd" ]:
+    file { "${openvpn::config_dir}/${name}":
       ensure => directory,
       mode    => $openvpn::config_file_mode,
       owner   => $openvpn::config_file_owner,
       group   => $openvpn::config_file_group,
       require => Package['openvpn'],
+    }
+
+    file { "${openvpn::config_dir}/${name}/ccd":
+      ensure => directory,
+      mode    => $openvpn::config_file_mode,
+      owner   => $openvpn::config_file_owner,
+      group   => $openvpn::config_file_group,
+      purge   => true,
+      recurse => true,
+      require => File[ "${openvpn::config_dir}/${name}" ]
     }
 
     if $auth_type == "tls-server" {

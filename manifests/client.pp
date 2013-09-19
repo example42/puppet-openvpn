@@ -1,7 +1,27 @@
 define openvpn::client (
   $cn,
+  $push         = '',
+  $pushReset    = false,
+  $iroute       = '',
+  $ifconfigPush = '',
+  $config       = ''
 ) {
-
-  notify {"$name":}
   
+  file { "${openvpn::config_dir}/${name}/ccd/${cn}.conf":
+    ensure  => file,
+    mode    => $openvpn::config_file_mode,
+    owner   => $openvpn::config_file_owner,
+    group   => $openvpn::config_file_group,
+    content => template('openvpn/ccd.conf.erb'),
+    require => File[ "${openvpn::config_dir}/${name}/ccd" ]
+  }
+
+  exec { "openvpn-client-gen-cert-${name}":
+    command  => ". ./vars && ./pkitool ${cn}",
+    cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
+    creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/${name}.crt",
+    provider => 'shell',
+    require  => Exec["openvpn-tunnel-rsa-ca-${name}"]
+  }
+
 }
