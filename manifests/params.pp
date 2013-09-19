@@ -97,16 +97,15 @@ class openvpn::params {
   # Easy-rsa
   $easyrsa_package      = 'easy-rsa'
   $easyrsa_dir          = '/usr/share/easy-rsa'
-  $easyrsa_country      = 'World'
+  $easyrsa_country      = 'EU'
   $easyrsa_province     = 'Puppet'
   $easyrsa_city         = 'Example42'
   $easyrsa_org          = 'Example42'
   $easyrsa_email        = "PKI@example.org"
   $easyrsa_cn           = $::fqdn
   $easyrsa_name         = $::fqdn
-  $easyrsa_ou           = ""
+  $easyrsa_ou           = 'DevOps'
   $easyrsa_key_size     = 1024
-  
 
   # General Settings
   $my_class = ''

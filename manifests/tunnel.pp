@@ -188,6 +188,7 @@ define openvpn::tunnel (
           creates  => [ "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.key", 
                         "${openvpn::config_dir}/${name}/easy-rsa/keys/ca.crt" ],
           provider => 'shell',
+          timeout  => 0,
           notify   => Service['openvpn'],
           require  => [ Exec["openvpn-tunnel-rsa-dh-${name}"],
                         File["${openvpn::config_dir}/${name}/easy-rsa/openssl.cnf"] ];
