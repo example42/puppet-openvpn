@@ -198,6 +198,9 @@
 #   This is used by monitor, firewall and puppi (optional) components
 #   Can be defined also by the (top scope) variable $openvpn_protocol
 #
+# [*client_class*]
+#   The class to use for configuring individual clients of a tunnel
+#
 #
 # == Examples
 #
@@ -253,7 +256,8 @@ class openvpn (
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $protocol            = params_lookup( 'protocol' ),
+  $client_type         = params_lookup( 'client_type' )
   ) inherits openvpn::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)

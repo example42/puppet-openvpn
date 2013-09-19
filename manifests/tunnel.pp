@@ -60,7 +60,8 @@ define openvpn::tunnel (
   $push         = '',
   $template     = '',
   $enable       = true,
-  $clients      = {}
+  $clients      = {},
+  $client_type  = $openvpn::client_type
 ) {
 
   include openvpn
@@ -98,6 +99,15 @@ define openvpn::tunnel (
     notify  => Service['openvpn'],
     content => template($real_template),
   }
+  
+  file { [ "${openvpn::config_dir}/${name}",
+           "${openvpn::config_dir}/${name}/ccd" ]:
+    ensure => directory,
+    mode    => $openvpn::config_file_mode,
+    owner   => $openvpn::config_file_owner,
+    group   => $openvpn::config_file_group,
+    require => Package['openvpn'],
+  }
 
   if $auth_key != '' {
     file { "openvpn_${name}.key":
@@ -111,8 +121,13 @@ define openvpn::tunnel (
       source  => $auth_key,
     }
   }
-  
-  each($clients) |$commonname, $params| { notice $params }
+
+  each($clients) |$commonname, $params| {
+    $client_type { "${name}-${commonname}":
+      cn      => $commonname,
+      params  => $params,
+    }
+  }
 
 # Automatic monitoring of port and service
   if $openvpn::bool_monitor == true {

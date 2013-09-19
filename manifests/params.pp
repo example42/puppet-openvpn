@@ -91,6 +91,8 @@ class openvpn::params {
 
   $port = '1194'
   $protocol = 'tcp'
+  
+  $client_type = 'openvpn::client'
 
   # General Settings
   $my_class = ''
