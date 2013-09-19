@@ -122,14 +122,13 @@ define openvpn::tunnel (
     }
   }
 
+  # The each is required to allow one CN to be used
+  # with multiple tunnels.
   each($clients) |$commonname, $params| {
     create_resources(
       $client_type,
-      { "${name}-${commonname}" =>
-        { 'cn'     => $commonname,
-          'params' => $params
-        }
-      }
+      { "${name}-${commonname}" => $params },
+      { 'cn'  => $commonname }
     )
   
   }

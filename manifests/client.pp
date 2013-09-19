@@ -3,6 +3,6 @@ define openvpn::client (
   $params
 ) {
 
-  notice {"$name: $params":}
+  notify {"$name: $params":}
   
 }
