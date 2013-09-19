@@ -80,6 +80,17 @@
 # [*easyrsa_key_size*]
 #   Option for easy-rsa to generate the certificate with
 #
+# == Examples
+#
+#  openvpn::tunnel { 'main':
+#    dev              => 'tap',
+#    server           => '172.31.253.0 255.255.255.0',
+#    easyrsa_email    => 'devops@organization',
+#    clients => {
+#      'node42.fqdn' => { pushReset => true }
+#    }
+#  }
+#
 #
 define openvpn::tunnel (
   $auth_type           = 'tls-server',
