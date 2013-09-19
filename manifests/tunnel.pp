@@ -123,10 +123,15 @@ define openvpn::tunnel (
   }
 
   each($clients) |$commonname, $params| {
-    $client_type { "${name}-${commonname}":
-      cn      => $commonname,
-      params  => $params,
-    }
+    create_resources(
+      $client_type,
+      { "${name}-${commonname}" =>
+        { 'cn'     => $commonname,
+          'params' => $params
+        }
+      }
+    )
+  
   }
 
 # Automatic monitoring of port and service
