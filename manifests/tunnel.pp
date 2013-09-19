@@ -225,7 +225,7 @@ define openvpn::tunnel (
       create_resources(
         $client_type,
         { "${name}-${commonname}" => $params },
-        { 'cn'  => $commonname }
+        { 'cn'  => $commonname, tunnelName => $name }
       )
 
     }

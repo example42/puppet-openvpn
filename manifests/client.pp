@@ -1,5 +1,6 @@
 define openvpn::client (
   $cn,
+  $tunnelName,
   $push         = '',
   $pushReset    = false,
   $iroute       = '',
@@ -18,10 +19,10 @@ define openvpn::client (
 
   exec { "openvpn-client-gen-cert-${name}":
     command  => ". ./vars && ./pkitool ${cn}",
-    cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
-    creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/${name}.crt",
+    cwd      => "${openvpn::config_dir}/${tunnelName}/easy-rsa",
+    creates  => "${openvpn::config_dir}/${tunnelName}/easy-rsa/keys/${name}.crt",
     provider => 'shell',
-    require  => Exec["openvpn-tunnel-rsa-ca-${name}"]
+    require  => Exec["openvpn-tunnel-rsa-ca-${tunnelName}"]
   }
 
 }
