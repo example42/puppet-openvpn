@@ -8,13 +8,13 @@ define openvpn::client (
   $config       = ''
 ) {
   
-  file { "${openvpn::config_dir}/${name}/ccd/${cn}.conf":
+  file { "${openvpn::config_dir}/${tunnelName}/ccd/${cn}":
     ensure  => file,
     mode    => $openvpn::config_file_mode,
     owner   => $openvpn::config_file_owner,
     group   => $openvpn::config_file_group,
     content => template('openvpn/ccd.conf.erb'),
-    require => File[ "${openvpn::config_dir}/${name}/ccd" ]
+    require => File[ "${openvpn::config_dir}/${tunnelName}/ccd" ]
   }
 
   exec { "openvpn-client-gen-cert-${name}":
