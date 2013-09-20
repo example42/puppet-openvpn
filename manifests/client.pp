@@ -20,7 +20,7 @@ define openvpn::client (
   exec { "openvpn-client-gen-cert-${name}":
     command  => ". ./vars && ./pkitool ${cn}",
     cwd      => "${openvpn::config_dir}/${tunnelName}/easy-rsa",
-    creates  => "${openvpn::config_dir}/${tunnelName}/easy-rsa/keys/${name}.crt",
+    creates  => "${openvpn::config_dir}/${tunnelName}/easy-rsa/keys/${cn}.crt",
     provider => 'shell',
     notify   => Service['openvpn'],
     require  => Exec["openvpn-tunnel-rsa-ca-${tunnelName}"]
