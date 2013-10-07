@@ -21,8 +21,8 @@ secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key
 <% if @auth_type == "tls-server" -%>
 tls-server
 ca <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/ca.crt
-cert <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/server.crt
-key <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/server.crt
+cert <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/<%= scope.lookupvar("::fqdn") %>.crt
+key <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/<%= scope.lookupvar("::fqdn") %>.key
 dh <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>/keys/dh<%= @easyrsa_key_size %>.pem
 <% end -%>
 

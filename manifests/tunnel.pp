@@ -224,7 +224,7 @@ define openvpn::tunnel (
           require => File["${openvpn::config_dir}/${name}"];
 
         "openvpn-tunnel-rsa-dh-${name}":
-          command  => '. ./vars && ./clean-all && ./build-dh',
+          command  => '. ./vars && ./clean-all && RANDFILE=.rnd ./build-dh',
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
           creates  => "${openvpn::config_dir}/${name}/easy-rsa/keys/dh${easyrsa_key_size}.pem",
           provider => 'shell',
@@ -244,7 +244,7 @@ define openvpn::tunnel (
                         File["${openvpn::config_dir}/${name}/easy-rsa/openssl.cnf"] ];
 
         "openvpn-tunnel-rsa-servercrt-${name}":
-          command  => ". ./vars && ./pkitool --server $::fqdn}",
+          command  => ". ./vars && ./pkitool --server ${::fqdn}",
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
           creates  => "${openvpn::config_dir}/easy-rsa/keys/${::fqdn}.key",
           provider => 'shell',
