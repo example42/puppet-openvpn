@@ -16,6 +16,7 @@ class openvpn::repository (
         protocol       => 'tcp',
         port           => 80,
         direction      => 'output', 
+        enable_v6      => false
       }
     }
 
@@ -30,7 +31,8 @@ class openvpn::repository (
         destination    => '173.192.224.173', # repos.openvpn.net
         protocol       => 'tcp',
         port           => 443,
-        direction      => 'output', 
+        direction      => 'output',
+        enable_v6      => false,
       }
     }
 
