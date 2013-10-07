@@ -18,7 +18,7 @@ define openvpn::client (
   }
 
   exec { "openvpn-client-gen-cert-${name}":
-    command  => ". ./vars && ./pkitool ${cn}",
+    command  => ". ./vars && KEY_CN=${cn} ./pkitool ${cn}",
     cwd      => "${openvpn::config_dir}/${tunnelName}/easy-rsa",
     creates  => "${openvpn::config_dir}/${tunnelName}/easy-rsa/keys/${cn}.crt",
     provider => 'shell',

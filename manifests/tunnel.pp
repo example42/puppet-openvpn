@@ -68,9 +68,6 @@
 # [*easyrsa_email*]
 #   Option for easy-rsa to generate the certificate with
 #
-# [*easyrsa_cn*]
-#   Option for easy-rsa to generate the certificate with
-#
 # [*easyrsa_name*]
 #   Option for easy-rsa to generate the certificate with
 #
@@ -112,7 +109,6 @@ define openvpn::tunnel (
   $easyrsa_city        = $openvpn::easyrsa_city,
   $easyrsa_org         = $openvpn::easyrsa_org,
   $easyrsa_email       = $openvpn::easyrsa_email,
-  $easyrsa_cn          = $openvpn::easyrsa_cn,
   $easyrsa_name        = $openvpn::easyrsa_name,
   $easyrsa_ou          = $openvpn::easyrsa_ou,
   $easyrsa_key_size    = $openvpn::easyrsa_key_size,
