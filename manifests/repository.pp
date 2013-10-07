@@ -10,15 +10,35 @@ class openvpn::repository (
       default: { $distro = $::lsbdistcodename }
     }
 
+    if $openvpn::bool_firewall {
+      firewall { 'openvpn-repository':
+        destination    => '173.192.224.173', # repos.openvpn.net
+        protocol       => 'tcp',
+        port           => 80,
+        direction      => 'output', 
+      }
+    }
+
     apt::repository { 'openvpn':
       url        => "http://repos.openvpn.net/repos/apt/${distro}-snapshots",
       distro     => $distro,
       repository => 'main',
     }
 
+    if $openvpn::bool_firewall {
+      firewall { 'openvpn-repository-key':
+        destination    => '173.192.224.173', # repos.openvpn.net
+        protocol       => 'tcp',
+        port           => 443,
+        direction      => 'output', 
+      }
+    }
+
     apt::key { '2048R/E158C569':
       url => 'https://swupdate.openvpn.net/repos/repo-public.gpg',
     }
+
   }
 
 }
+

@@ -308,8 +308,8 @@ define openvpn::tunnel (
 # Automatic Firewalling
   if $openvpn::bool_firewall == true {
     firewall { "openvpn_${name}_${proto}_${port}":
-      source      => $openvpn::firewall_source_real,
-      destination => $openvpn::firewall_destination_real,
+      source      => $openvpn::firewall_src,
+      destination => $openvpn::firewall_dst,
       protocol    => $proto,
       port        => $port,
       action      => 'allow',
