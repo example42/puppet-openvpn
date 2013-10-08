@@ -246,7 +246,8 @@ define openvpn::tunnel (
         "openvpn-tunnel-rsa-servercrt-${name}":
           command  => ". ./vars && ./pkitool --server ${::fqdn}",
           cwd      => "${openvpn::config_dir}/${name}/easy-rsa",
-          creates  => "${openvpn::config_dir}/easy-rsa/keys/${::fqdn}.key",
+          creates  => [ "${openvpn::config_dir}/${name}/easy-rsa/keys/${::fqdn}.key",
+                        "${openvpn::config_dir}/${name}/easy-rsa/keys/${::fqdn}.crt" ],
           provider => 'shell',
           notify   => Service['openvpn'],
           require  => Exec["openvpn-tunnel-rsa-ca-${name}"];
