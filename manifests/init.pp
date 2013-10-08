@@ -274,6 +274,7 @@ class openvpn (
   $process_args        = params_lookup( 'process_args' ),
   $process_user        = params_lookup( 'process_user' ),
   $process_group       = params_lookup( 'process_group' ),
+  $user_is_system_user = params_lookup( 'user_is_system_user' ),
   $config_dir          = params_lookup( 'config_dir' ),
   $config_file         = params_lookup( 'config_file' ),
   $config_file_mode    = params_lookup( 'config_file_mode' ),
@@ -389,7 +390,7 @@ class openvpn (
       before => Package[$openvpn::package]
     }
   }
-  
+
   package { 'openvpn':
     ensure => $openvpn::manage_package,
     name   => $openvpn::package,
@@ -402,6 +403,22 @@ class openvpn (
     hasstatus  => $openvpn::service_status,
     pattern    => $openvpn::process,
     require    => Package['openvpn'],
+  }
+
+  if ! defined(Group[$process_group]) {
+    group { $process_group:
+      ensure  => $openvpn::manage_file,
+      system  => true,
+    }
+  }
+
+  if ! defined(User[$process_user]) {
+    user { $process_user:
+      ensure  => $openvpn::manage_file,
+      comment => "Managed by Puppet",
+      require => Group[$process_group],
+      system => $user_is_system_user
+    }
   }
 
   if $manage_file_source != undef
