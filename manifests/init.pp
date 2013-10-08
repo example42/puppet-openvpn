@@ -134,7 +134,7 @@
 # [*package*]
 #   The name of openvpn package
 #
-# [*package_src*]
+# [*package_repo*]
 #   The source of the package. Currently only 'distro' (default) and
 #   'openvpn' are supported.
 #
@@ -198,6 +198,38 @@
 #   This is used by monitor, firewall and puppi (optional) components
 #   Can be defined also by the (top scope) variable $openvpn_protocol
 #
+# [*client_definedtype*]
+#   The Defined Resource Type to invoke when configuring a client
+#
+# [*easyrsa_package*]
+#   The name of the easy-rsa package to install to generate TLS certs
+#
+# [*easyrsa_country*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_province*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_city*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_org*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_email*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_cn*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_name*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_ou*]
+#   Option for easy-rsa to generate the certificate with
+#
+# [*easyrsa_key_size*]
+#   Option for easy-rsa to generate the certificate with
 #
 # == Examples
 #
@@ -235,13 +267,14 @@ class openvpn (
   $debug               = params_lookup( 'debug' , 'global' ),
   $audit_only          = params_lookup( 'audit_only' , 'global' ),
   $package             = params_lookup( 'package' ),
-  $package_src         = params_lookup( 'package_src' ),
+  $package_repo        = params_lookup( 'package_repo' ),
   $service             = params_lookup( 'service' ),
   $service_status      = params_lookup( 'service_status' ),
   $process             = params_lookup( 'process' ),
   $process_args        = params_lookup( 'process_args' ),
   $process_user        = params_lookup( 'process_user' ),
   $process_group       = params_lookup( 'process_group' ),
+  $user_is_system_user = params_lookup( 'user_is_system_user' ),
   $config_dir          = params_lookup( 'config_dir' ),
   $config_file         = params_lookup( 'config_file' ),
   $config_file_mode    = params_lookup( 'config_file_mode' ),
@@ -253,7 +286,19 @@ class openvpn (
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $protocol            = params_lookup( 'protocol' ),
+  $client_definedtype  = params_lookup( 'client_definedtype' ),
+  $easyrsa_package     = params_lookup( 'easyrsa_package' ),
+  $easyrsa_dir         = params_lookup( 'easyrsa_dir' ),
+  $easyrsa_country     = params_lookup( 'easyrsa_country' ),
+  $easyrsa_province    = params_lookup( 'easyrsa_province' ),
+  $easyrsa_city        = params_lookup( 'easyrsa_city' ),
+  $easyrsa_org         = params_lookup( 'easyrsa_org' ),
+  $easyrsa_email       = params_lookup( 'easyrsa_email' ),
+  $easyrsa_cn          = params_lookup( 'easyrsa_cn' ),
+  $easyrsa_name        = params_lookup( 'easyrsa_name' ),
+  $easyrsa_ou          = params_lookup( 'easyrsa_ou' ),
+  $easyrsa_key_size    = params_lookup( 'easyrsa_key_size' ),
   ) inherits openvpn::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -338,14 +383,14 @@ class openvpn (
   }
 
   ### Managed resources
-  if $package_src != 'distro' and $package_src != 'openvpn' {
-    fail("Unrecognized value for option package_src")
-  } elsif $package_src == 'openvpn' {
+  if $package_repo != 'distro' and $package_repo != 'openvpn' {
+    fail("Unrecognized value for option package_repo")
+  } elsif $package_repo == 'openvpn' {
     class { 'openvpn::repository':
       before => Package[$openvpn::package]
     }
   }
-  
+
   package { 'openvpn':
     ensure => $openvpn::manage_package,
     name   => $openvpn::package,
@@ -358,6 +403,24 @@ class openvpn (
     hasstatus  => $openvpn::service_status,
     pattern    => $openvpn::process,
     require    => Package['openvpn'],
+  }
+
+  if ! defined(Group[$process_group]) {
+    group { $process_group:
+      ensure  => $openvpn::manage_file,
+      system  => true,
+      notify  => Service[$service]
+    }
+  }
+
+  if ! defined(User[$process_user]) {
+    user { $process_user:
+      ensure  => $openvpn::manage_file,
+      comment => "Managed by Puppet",
+      require => Group[$process_group],
+      system  => any2bool($user_is_system_user),
+      notify  => Service[$service]
+    }
   }
 
   if $manage_file_source != undef

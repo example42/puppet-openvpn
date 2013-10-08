@@ -15,12 +15,14 @@
 class openvpn::params {
 
   ### Application related parameters
+  
+  $user_is_system_user = true
 
   $package = $::operatingsystem ? {
     default => 'openvpn',
   }
 
-  $package_src = 'distro'
+  $package_repo = 'distro'
 
   $service = $::operatingsystem ? {
     default => 'openvpn',
@@ -90,7 +92,22 @@ class openvpn::params {
   }
 
   $port = '1194'
-  $protocol = 'tcp'
+  $protocol = 'udp'
+  
+  $client_definedtype = 'openvpn::client'
+  
+  # Easy-rsa
+  $easyrsa_package      = 'easy-rsa'
+  $easyrsa_dir          = '/usr/share/easy-rsa'
+  $easyrsa_country      = 'EU'
+  $easyrsa_province     = 'Puppet'
+  $easyrsa_city         = 'Example42'
+  $easyrsa_org          = 'Example42'
+  $easyrsa_email        = "PKI@example.org"
+  $easyrsa_cn           = $::fqdn
+  $easyrsa_name         = $::fqdn
+  $easyrsa_ou           = 'DevOps'
+  $easyrsa_key_size     = 4096
 
   # General Settings
   $my_class = ''

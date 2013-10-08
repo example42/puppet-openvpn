@@ -1,0 +1,26 @@
+<% if @push != "" -%>
+<% @push.each do |push_entry| -%>
+push "<%= push %>"
+<% end -%>
+<% end -%>
+
+<% if @pushReset -%>
+push-reset
+<% end -%>
+
+<% if @iroute != "" -%>
+<% @iroute.each do |iroute_entry| -%>
+iroute "<%= iroute_entry %>"
+<% end -%>
+<% end -%>
+
+<% if @ifconfigPush != "" -%>
+<% @ifconfigPush.each do |ifconfigPush_entry| -%>
+ifconfig-push "<%= ifconfigPush_entry %>"
+<% end -%>
+<% end -%>
+
+
+<% if @config != "" -%>
+config "<%= config %>"
+<% end -%>
