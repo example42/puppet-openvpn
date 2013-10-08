@@ -409,6 +409,7 @@ class openvpn (
     group { $process_group:
       ensure  => $openvpn::manage_file,
       system  => true,
+      notify  => Service[$service]
     }
   }
 
@@ -417,7 +418,8 @@ class openvpn (
       ensure  => $openvpn::manage_file,
       comment => "Managed by Puppet",
       require => Group[$process_group],
-      system => any2bool($user_is_system_user)
+      system  => any2bool($user_is_system_user),
+      notify  => Service[$service]
     }
   }
 
