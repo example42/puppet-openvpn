@@ -15,6 +15,8 @@
 class openvpn::params {
 
   ### Application related parameters
+  
+  $user_is_system_user = true
 
   $package = $::operatingsystem ? {
     default => 'openvpn',

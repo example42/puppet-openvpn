@@ -417,7 +417,7 @@ class openvpn (
       ensure  => $openvpn::manage_file,
       comment => "Managed by Puppet",
       require => Group[$process_group],
-      system => $user_is_system_user
+      system => any2bool($user_is_system_user)
     }
   }
 
