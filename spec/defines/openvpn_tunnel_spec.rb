@@ -29,6 +29,16 @@ describe 'openvpn::tunnel' do
     end
   end
 
+  describe 'Test many remote configuration' do
+    let(:params) { { 
+      :name   => 'mytunnel',
+      :mode   => 'client',
+      :port   => '1150',
+      :remote => ['vpn1.example42.com','vpn2.example42.com'],
+    } }
+    it { should contain_file('openvpn_mytunnel.conf').with_content(/remote vpn1.example42.com 1150\nremote vpn2.example42.com 1150/) }
+  end
+      
   describe 'Test Monitoring Tools Integration' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
