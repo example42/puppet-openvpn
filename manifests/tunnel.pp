@@ -9,6 +9,7 @@
 #
 # [*remote*]
 #   Sets remote host/IP. Needed in client mode. Default blank
+#   You can set an array if you want redundancy.
 #
 # [*port*]
 #   Default is 1194, change with multiple tunnels
@@ -46,6 +47,16 @@
 #
 # [*enable*]
 #   If the tunnel is enabled or not.
+#
+#
+# == Examples
+#
+# Define redundancy remote
+#
+#  openvpn::tunnel { 'my_tunnel':
+#    mode   => 'client',
+#    remote => [ 'vpn1.example42.com', 'vpn2.example42.com' ],
+#  }
 #
 define openvpn::tunnel (
   $auth_type    = 'tls-server',
