@@ -1,6 +1,12 @@
 # File Managed by Puppet
 
+<% if @remote.is_a? Array -%>
+<% @remote.each do |a_remote| -%>
+remote <%= a_remote %> <%= @port %>
+<% end -%>
+<% else -%>
 remote <%= @remote %> <%= @port %>
+<% end -%>
 proto <%= @real_proto %>
 dev <%= @dev %>
 <% if @route != '' %>route <%= @route %><% end -%>
@@ -11,7 +17,7 @@ persist-key
 persist-tun
 <% if @auth_type == "key" -%>
 client
-secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key 
+secret <%= scope.lookupvar("openvpn::config_dir") %>/<%= @name %>.key
 <% end -%>
 <% if @auth_type == "tls-client" -%>
 tls-client
