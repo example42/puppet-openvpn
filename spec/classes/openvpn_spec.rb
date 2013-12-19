@@ -20,7 +20,7 @@ describe 'openvpn' do
   describe 'Test decommissioning - absent' do
     let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
 
-    it 'should remove Package[openvpn]' do should contain_package('openvpn').with_ensure('absent') end 
+    it 'should remove Package[openvpn]' do should contain_package('openvpn').with_ensure('absent') end
     it 'should stop Service[openvpn]' do should contain_service('openvpn').with_ensure('stopped') end
     it 'should not enable at boot Service[openvpn]' do should contain_service('openvpn').with_enable('false') end
   end
@@ -35,23 +35,21 @@ describe 'openvpn' do
 
   describe 'Test decommissioning - disableboot' do
     let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
-  
+
     it { should contain_package('openvpn').with_ensure('present') }
     it { should_not contain_service('openvpn').with_ensure('present') }
     it { should_not contain_service('openvpn').with_ensure('absent') }
     it 'should not enable at boot Service[openvpn]' do should contain_service('openvpn').with_enable('false') end
-  end 
+  end
 
   describe 'Test customizations - template' do
     let(:params) { {:template => "openvpn/spec.erb" , :options => { 'opt_a' => 'value_a' } } }
 
     it 'should generate a valid template' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:content]
-      content.should match "fqdn: rspec.example42.com"
+      should contain_file('openvpn.conf').with_content(/fqdn: rspec\.example42\.com/)
     end
     it 'should generate a template that uses custom options' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:content]
-      content.should match "value_a"
+      should contain_file('openvpn.conf').with_content(/value_a/)
     end
 
   end
@@ -60,16 +58,13 @@ describe 'openvpn' do
     let(:params) { {:source => "puppet://modules/openvpn/spec" , :source_dir => "puppet://modules/openvpn/dir/spec" , :source_dir_purge => true } }
 
     it 'should request a valid source ' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:source]
-      content.should == "puppet://modules/openvpn/spec"
+      should contain_file('openvpn.conf').with_source('puppet://modules/openvpn/spec')
     end
     it 'should request a valid source dir' do
-      content = catalogue.resource('file', 'openvpn.dir').send(:parameters)[:source]
-      content.should == "puppet://modules/openvpn/dir/spec"
+      should contain_file('openvpn.dir').with_source('puppet://modules/openvpn/dir/spec')
     end
     it 'should purge source dir if source_dir_purge is true' do
-      content = catalogue.resource('file', 'openvpn.dir').send(:parameters)[:purge]
-      content.should == true
+      should contain_file('openvpn.dir').with_purge(true)
     end
   end
 
@@ -82,8 +77,7 @@ describe 'openvpn' do
     let(:params) { {:service_autorestart => "no" , :source => 'real' } }
 
     it 'should not automatically restart the service, when service_autorestart => false' do
-      content = catalogue.resource('file', 'openvpn.conf').send(:parameters)[:notify]
-      content.should be_nil
+      should contain_file('openvpn.conf').with_notify(nil)
     end
   end
 
@@ -91,8 +85,7 @@ describe 'openvpn' do
     let(:params) { {:puppi => true, :puppi_helper => "myhelper"} }
 
     it 'should generate a puppi::ze define' do
-      content = catalogue.resource('puppi::ze', 'openvpn').send(:parameters)[:helper]
-      content.should == "myhelper"
+      should contain_puppi__ze('openvpn').with_helper('myhelper')
     end
   end
 
