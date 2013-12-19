@@ -40,5 +40,8 @@ inactive 0
 <% if @bool_compress -%>
 comp-lzo
 <% end %>
+<% if @bool_keepalive -%>
+keepalive <%= @keepalive_freq %> <%= @keepalive_timeout %>
+<% end %>
 # client-connect /etc/openvpn/script/client_connect
 # client-disconnect /etc/openvpn/script/client_disconnect

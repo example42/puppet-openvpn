@@ -66,6 +66,25 @@ describe 'openvpn::tunnel' do
     end
   end
 
+  describe 'Test client keepalive configuration' do
+    let(:params) { {
+      :name              => 'mytunnel',
+      :mode              => 'client',
+      :keepalive         => true,
+      :keepalive_freq    => '42',
+      :keepalive_timeout => '4242',
+    } }
+    it { should contain_file('openvpn_mytunnel.conf').with_content(/keepalive 42 4242/) }
+  end
+
+  describe 'Test Monitoring Tools Integration' do
+    let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
+
+    it 'should generate monitor defines' do
+      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
+      content.should == "puppi"
+    end
+  end
 
   describe 'Test Firewall Tools Integration' do
     let(:facts) { {:firewall => true, :firewall_tool => "iptables" } }
