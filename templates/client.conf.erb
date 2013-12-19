@@ -32,7 +32,7 @@ ns-cert-type server
 verb 3
 ;mute 20
 user <%= scope.lookupvar("openvpn::process_user") %>
-group <%= scope.lookupvar("openvpn::process_user") %>
+group <%= scope.lookupvar("openvpn::process_group") %>
 
 keepalive 10 60
 inactive 0
