@@ -30,7 +30,7 @@ describe 'openvpn::tunnel' do
   end
 
   describe 'Test many remote configuration' do
-    let(:params) { { 
+    let(:params) { {
       :name   => 'mytunnel',
       :mode   => 'client',
       :port   => '1150',
@@ -38,7 +38,7 @@ describe 'openvpn::tunnel' do
     } }
     it { should contain_file('openvpn_mytunnel.conf').with_content(/remote vpn1.example42.com 1150\nremote vpn2.example42.com 1150/) }
   end
-      
+
   describe 'Test Monitoring Tools Integration' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
@@ -47,6 +47,25 @@ describe 'openvpn::tunnel' do
       content.should == "puppi"
     end
   end
+
+  describe 'Test client compress configuration' do
+    let(:params) { {
+      :name     => 'mytunnel',
+      :mode     => 'client',
+      :compress => true,
+    } }
+    it { should contain_file('openvpn_mytunnel.conf').with_content(/comp-lzo/) }
+  end
+
+  describe 'Test Monitoring Tools Integration' do
+    let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
+
+    it 'should generate monitor defines' do
+      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
+      content.should == "puppi"
+    end
+  end
+
 
   describe 'Test Firewall Tools Integration' do
     let(:facts) { {:firewall => true, :firewall_tool => "iptables" } }

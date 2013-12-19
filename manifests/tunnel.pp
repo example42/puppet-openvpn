@@ -40,6 +40,9 @@
 # [*push*]
 #   Push parameter
 #
+# [*compress*]
+#   Active comp-lzo (default false)
+#
 # [*template*]
 #   Template to be used for the tunnel configuration.
 #   Default is openvpn/server.conf.erb
@@ -70,11 +73,13 @@ define openvpn::tunnel (
   $route        = '',
   $push         = '',
   $template     = '',
+  $compress     = false,
   $enable       = true ) {
 
   include openvpn
 
   $bool_enable=any2bool($enable)
+  $bool_compress=any2bool($compress)
 
   $manage_file = $bool_enable ? {
     true    => 'present',
