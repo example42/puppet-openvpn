@@ -39,9 +39,9 @@ inactive 0
 # cipher x
 <% if @bool_compress -%>
 comp-lzo
-<% end %>
+<% end -%>
 <% if @bool_keepalive -%>
 keepalive <%= @keepalive_freq %> <%= @keepalive_timeout %>
-<% end %>
+<% end -%>
 # client-connect /etc/openvpn/script/client_connect
 # client-disconnect /etc/openvpn/script/client_disconnect
