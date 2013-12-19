@@ -20,12 +20,10 @@ describe 'openvpn::tunnel' do
       should contain_file('openvpn_mytunnel.conf').with_ensure('present')
     end
     it 'should populate correctly the openvpn::tunnel configuration file' do
-      content = catalogue.resource('file', 'openvpn_mytunnel.conf').send(:parameters)[:content]
-      content.should match "secret /etc/openvpn/mytunnel.key "
+      should contain_file('openvpn_mytunnel.conf').with_content(/secret \/etc\/openvpn\/mytunnel\.key/)
     end
     it 'should create a key file when auth_key is provided' do
-      content = catalogue.resource('file', 'openvpn_mytunnel.key').send(:parameters)[:source]
-      content.should match "mykey"
+      should contain_file('openvpn_mytunnel.key').with_source(/mykey/)
     end
   end
 
@@ -43,8 +41,7 @@ describe 'openvpn::tunnel' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
     it 'should generate monitor defines' do
-      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
-      content.should == "puppi"
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
     end
   end
 
@@ -61,8 +58,7 @@ describe 'openvpn::tunnel' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
     it 'should generate monitor defines' do
-      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
-      content.should == "puppi"
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
     end
   end
 
@@ -81,8 +77,7 @@ describe 'openvpn::tunnel' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
     it 'should generate monitor defines' do
-      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
-      content.should == "puppi"
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
     end
   end
 
@@ -90,8 +85,7 @@ describe 'openvpn::tunnel' do
     let(:facts) { {:firewall => true, :firewall_tool => "iptables" } }
 
     it 'should generate correct firewall define' do
-      content = catalogue.resource('firewall', 'openvpn_mytunnel_tcp_1150').send(:parameters)[:tool]
-      content.should == "iptables"
+      should contain_firewall('openvpn_mytunnel_tcp_1150').with_tool('iptables')
     end
   end
 
