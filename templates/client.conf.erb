@@ -34,14 +34,13 @@ verb 3
 user <%= scope.lookupvar("openvpn::process_user") %>
 group <%= scope.lookupvar("openvpn::process_group") %>
 
-keepalive 10 60
-inactive 0
-# cipher x
 <% if @bool_compress -%>
 comp-lzo
 <% end -%>
 <% if @bool_keepalive -%>
 keepalive <%= @keepalive_freq %> <%= @keepalive_timeout %>
 <% end -%>
+inactive 0
+# cipher x
 # client-connect /etc/openvpn/script/client_connect
 # client-disconnect /etc/openvpn/script/client_disconnect

@@ -44,7 +44,7 @@
 #   Active comp-lzo (default false)
 #
 # [*keepalive]
-#   Active keepalive (default false).
+#   Active keepalive (default true).
 #   On client this parameter can be push by server
 #
 # [*keepalive_freq*]
@@ -84,7 +84,7 @@ define openvpn::tunnel (
   $push              = '',
   $template          = '',
   $compress          = false,
-  $keepalive         = false,
+  $keepalive         = true,
   $keepalive_freq    = "10",
   $keepalive_timeout = "60",
   $enable            = true ) {
