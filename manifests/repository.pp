@@ -1,3 +1,5 @@
+# Class openvpn::repository
+#
 class openvpn::repository (
 ) {
 
@@ -15,8 +17,8 @@ class openvpn::repository (
         destination    => '173.192.224.173', # repos.openvpn.net
         protocol       => 'tcp',
         port           => 80,
-        direction      => 'output', 
-        enable_v6      => false
+        direction      => 'output',
+        enable_v6      => false,
       }
     }
 

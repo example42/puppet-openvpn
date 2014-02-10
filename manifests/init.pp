@@ -339,13 +339,13 @@ class openvpn (
 
   ### Managed resources
   if $package_src != 'distro' and $package_src != 'openvpn' {
-    fail("Unrecognized value for option package_src")
+    fail('Unrecognized value for option package_src')
   } elsif $package_src == 'openvpn' {
     class { 'openvpn::repository':
       before => Package[$openvpn::package]
     }
   }
-  
+
   package { 'openvpn':
     ensure => $openvpn::manage_package,
     name   => $openvpn::package,
