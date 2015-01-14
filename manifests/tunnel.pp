@@ -114,7 +114,7 @@ define openvpn::tunnel (
       path    => "${openvpn::config_dir}/${name}.key",
       mode    => '0600',
       owner   => $openvpn::process_user,
-      group   => $openvpn::process_user,
+      group   => $openvpn::process_group,
       require => Package['openvpn'],
       notify  => Service['openvpn'],
       source  => $auth_key,
