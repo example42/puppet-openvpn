@@ -14,11 +14,11 @@ class openvpn::repository (
 
     if $openvpn::bool_firewall {
       firewall { 'openvpn-repository':
-        destination    => '173.192.224.173', # repos.openvpn.net
-        protocol       => 'tcp',
-        port           => 80,
-        direction      => 'output',
-        enable_v6      => false,
+        destination => '173.192.224.173', # repos.openvpn.net
+        protocol    => 'tcp',
+        port        => 80,
+        direction   => 'output',
+        enable_v6   => false,
       }
     }
 
@@ -30,11 +30,11 @@ class openvpn::repository (
 
     if $openvpn::bool_firewall {
       firewall { 'openvpn-repository-key':
-        destination    => '173.192.224.173', # repos.openvpn.net
-        protocol       => 'tcp',
-        port           => 443,
-        direction      => 'output',
-        enable_v6      => false,
+        destination => '173.192.224.173', # repos.openvpn.net
+        protocol    => 'tcp',
+        port        => 443,
+        direction   => 'output',
+        enable_v6   => false,
       }
     }
 

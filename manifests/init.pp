@@ -352,12 +352,12 @@ class openvpn (
   }
 
   service { 'openvpn':
-    ensure     => $openvpn::manage_service_ensure,
-    name       => $openvpn::service,
-    enable     => $openvpn::manage_service_enable,
-    hasstatus  => $openvpn::service_status,
-    pattern    => $openvpn::process,
-    require    => Package['openvpn'],
+    ensure    => $openvpn::manage_service_ensure,
+    name      => $openvpn::service,
+    enable    => $openvpn::manage_service_enable,
+    hasstatus => $openvpn::service_status,
+    pattern   => $openvpn::process,
+    require   => Package['openvpn'],
   }
 
   if $manage_file_source != undef
