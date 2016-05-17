@@ -24,7 +24,6 @@ tls-client
 ca ca.crt
 cert <%= @hostname %>.crt
 key <%= @hostname %>.key
-tls-client
 pull
 <% end -%>
 
@@ -34,9 +33,13 @@ verb 3
 user <%= scope.lookupvar("openvpn::process_user") %>
 group <%= scope.lookupvar("openvpn::process_group") %>
 
-keepalive 10 60
+<% if @bool_compress -%>
+comp-lzo
+<% end -%>
+<% if @bool_keepalive -%>
+keepalive <%= @keepalive_freq %> <%= @keepalive_timeout %>
+<% end -%>
 inactive 0
 # cipher x
-# comp-lzo # Compress data
 # client-connect /etc/openvpn/script/client_connect
 # client-disconnect /etc/openvpn/script/client_disconnect

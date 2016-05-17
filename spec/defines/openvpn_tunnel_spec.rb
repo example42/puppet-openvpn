@@ -20,17 +20,15 @@ describe 'openvpn::tunnel' do
       should contain_file('openvpn_mytunnel.conf').with_ensure('present')
     end
     it 'should populate correctly the openvpn::tunnel configuration file' do
-      content = catalogue.resource('file', 'openvpn_mytunnel.conf').send(:parameters)[:content]
-      content.should match "secret /etc/openvpn/mytunnel.key "
+      should contain_file('openvpn_mytunnel.conf').with_content(/secret \/etc\/openvpn\/mytunnel\.key/)
     end
     it 'should create a key file when auth_key is provided' do
-      content = catalogue.resource('file', 'openvpn_mytunnel.key').send(:parameters)[:source]
-      content.should match "mykey"
+      should contain_file('openvpn_mytunnel.key').with_source(/mykey/)
     end
   end
 
   describe 'Test many remote configuration' do
-    let(:params) { { 
+    let(:params) { {
       :name   => 'mytunnel',
       :mode   => 'client',
       :port   => '1150',
@@ -38,13 +36,48 @@ describe 'openvpn::tunnel' do
     } }
     it { should contain_file('openvpn_mytunnel.conf').with_content(/remote vpn1.example42.com 1150\nremote vpn2.example42.com 1150/) }
   end
-      
+
   describe 'Test Monitoring Tools Integration' do
     let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
 
     it 'should generate monitor defines' do
-      content = catalogue.resource('monitor::process', 'openvpn_mytunnel_process').send(:parameters)[:tool]
-      content.should == "puppi"
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
+    end
+  end
+
+  describe 'Test client compress configuration' do
+    let(:params) { {
+      :name     => 'mytunnel',
+      :mode     => 'client',
+      :compress => true,
+    } }
+    it { should contain_file('openvpn_mytunnel.conf').with_content(/comp-lzo/) }
+  end
+
+  describe 'Test Monitoring Tools Integration' do
+    let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
+
+    it 'should generate monitor defines' do
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
+    end
+  end
+
+  describe 'Test client keepalive configuration' do
+    let(:params) { {
+      :name              => 'mytunnel',
+      :mode              => 'client',
+      :keepalive         => true,
+      :keepalive_freq    => '42',
+      :keepalive_timeout => '4242',
+    } }
+    it { should contain_file('openvpn_mytunnel.conf').with_content(/keepalive 42 4242/) }
+  end
+
+  describe 'Test Monitoring Tools Integration' do
+    let(:facts) { {:monitor => true, :monitor_tool => "puppi", :monitor_target => "2.2.2.2" } }
+
+    it 'should generate monitor defines' do
+      should contain_monitor__process('openvpn_mytunnel_process').with_tool('puppi')
     end
   end
 
@@ -52,8 +85,7 @@ describe 'openvpn::tunnel' do
     let(:facts) { {:firewall => true, :firewall_tool => "iptables" } }
 
     it 'should generate correct firewall define' do
-      content = catalogue.resource('firewall', 'openvpn_mytunnel_tcp_1150').send(:parameters)[:tool]
-      content.should == "iptables"
+      should contain_firewall('openvpn_mytunnel_tcp_1150').with_tool('iptables')
     end
   end
 

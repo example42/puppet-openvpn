@@ -40,6 +40,19 @@
 # [*push*]
 #   Push parameter
 #
+# [*compress*]
+#   Active comp-lzo (default false)
+#
+# [*keepalive]
+#   Active keepalive (default true).
+#   On client this parameter can be push by server
+#
+# [*keepalive_freq*]
+#   Keepalive test frequency (default 10s)
+#
+# [*keepalive_timeout*]
+#   Keepalive time before restart (default 60s)
+#
 # [*template*]
 #   Template to be used for the tunnel configuration.
 #   Default is openvpn/server.conf.erb
@@ -59,22 +72,28 @@
 #  }
 #
 define openvpn::tunnel (
-  $auth_type    = 'tls-server',
-  $mode         = 'server',
-  $remote       = '',
-  $port         = '1194',
-  $auth_key     = '',
-  $proto        = 'tcp',
-  $dev          = 'tun',
-  $server       = '10.8.0.0 255.255.255.0',
-  $route        = '',
-  $push         = '',
-  $template     = '',
-  $enable       = true ) {
+  $auth_type         = 'tls-server',
+  $mode              = 'server',
+  $remote            = '',
+  $port              = '1194',
+  $auth_key          = '',
+  $proto             = 'tcp',
+  $dev               = 'tun',
+  $server            = '10.8.0.0 255.255.255.0',
+  $route             = '',
+  $push              = '',
+  $template          = '',
+  $compress          = false,
+  $keepalive         = true,
+  $keepalive_freq    = "10",
+  $keepalive_timeout = "60",
+  $enable            = true ) {
 
   include openvpn
 
   $bool_enable=any2bool($enable)
+  $bool_compress=any2bool($compress)
+  $bool_keepalive=any2bool($keepalive)
 
   $manage_file = $bool_enable ? {
     true    => 'present',
